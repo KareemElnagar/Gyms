@@ -1,11 +1,12 @@
 package com.kareem.gyms
 
 
-val listOfGyms = listOf<Gym> (
-    Gym("Fitness First", "Mall A"),
-    Gym("Titan Cross", "Mall B"),
-    Gym("Health Haven", "Mall C"),
-    Gym("Elite Workout", "Mall D"),
-    Gym("Peak Performance", "Mall E"),
+val listOfGyms = listOf(
+    Gym(1, "Fitness First", "Mall A"),
+    Gym(2, "Titan Cross", "Mall B"),
+    Gym(3, "Health Haven", "Mall C"),
+    Gym(4, "Elite Workout", "Mall D"),
+    Gym(5, "Peak Performance", "Mall E"),
 )
-data class Gym(val name: String, val place: String)
+
+data class Gym(val id: Int, val name: String, val place: String, var isFavourite: Boolean = false)

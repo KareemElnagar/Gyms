@@ -2,4 +2,10 @@
 <resources>
 
     <style name="Theme.Gyms" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="GymsSplashScreen" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/black</item>
+    </style>
 </resources>
