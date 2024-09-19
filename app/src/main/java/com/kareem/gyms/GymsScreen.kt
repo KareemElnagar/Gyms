@@ -18,12 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,7 +32,8 @@ import com.kareem.gyms.ui.theme.Purple40
 @Composable
 fun GymsScreen() {
     val vm: GymsViewModel = viewModel()
-    LazyColumn() {
+
+    LazyColumn(Modifier.padding(8.dp)) {
         items(vm.state) { gym ->
             GymItem(gym) { gymId ->
                 vm.toggleFavouriteState(gymId)

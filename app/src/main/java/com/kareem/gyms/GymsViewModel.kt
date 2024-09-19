@@ -5,13 +5,50 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class GymsViewModel(
     private val stateHandle: SavedStateHandle  // to save lightweight state
 ) : ViewModel() {
-    private fun getGyms() = listOfGyms
-    var state by mutableStateOf(restoreSelectedGyms())
+    var state by mutableStateOf(emptyList<Gym>())
+    private var apiService: GymsApiService
 
+    private val errorHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+    }
+
+//    private val job = Job()
+//    private val scope = CoroutineScope(job + Dispatchers.IO)
+
+    init {
+        val url = "https://gyms-49db3-default-rtdb.firebaseio.com/"
+        val retrofit: Retrofit = Retrofit.Builder()
+            .addConverterFactory(
+                GsonConverterFactory.create()
+            )
+            .baseUrl(url)
+            .build()
+        apiService = retrofit.create(GymsApiService::class.java)
+
+        getGyms()
+    }
+
+    private fun getGyms() {
+        viewModelScope.launch(Dispatchers.IO + errorHandler) {
+            val gyms = getGymsFromRemoteDB()
+            withContext(Dispatchers.Main){
+                state = gyms.restoreSelectedGyms()
+            }
+        }
+    }
+
+    private suspend fun getGymsFromRemoteDB() = withContext(Dispatchers.IO) { apiService.getGyms() }
     fun toggleFavouriteState(gymId: Int) {
         val gyms = state.toMutableList()
         val itemIndex = gyms.indexOfFirst { it.id == gymId }
@@ -27,8 +64,8 @@ class GymsViewModel(
         stateHandle[FAV_IDS] = savedHandleList
     }
 
-    private fun restoreSelectedGyms(): List<Gym> {
-        val gyms = getGyms()
+    private fun List<Gym>.restoreSelectedGyms(): List<Gym> {
+        val gyms = this
         stateHandle.get<List<Int>?>(FAV_IDS)?.let { savedIds ->
             savedIds.forEach { gymId ->
                 gyms.find { it.id == gymId }?.isFavourite = true
