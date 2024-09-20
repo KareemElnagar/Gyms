@@ -30,20 +30,26 @@ import com.kareem.gyms.ui.theme.GymsTheme
 import com.kareem.gyms.ui.theme.Purple40
 
 @Composable
-fun GymsScreen() {
+fun GymsScreen(onItemClick: (Int) -> Unit) {
     val vm: GymsViewModel = viewModel()
 
     LazyColumn(Modifier.padding(8.dp)) {
         items(vm.state) { gym ->
-            GymItem(gym) { gymId ->
-                vm.toggleFavouriteState(gymId)
-            }
+            GymItem(
+                gym = gym,
+                onFavouriteItemClick = {
+                    vm.toggleFavouriteState(it)
+                },
+                onItemClick = {
+                    onItemClick(it)
+                }
+            )
         }
     }
 }
 
 @Composable
-fun GymItem(gym: Gym, onclick: (Int) -> Unit) {
+fun GymItem(gym: Gym, onFavouriteItemClick: (Int) -> Unit, onItemClick: (Int) -> Unit) {
 
     val icon = if (gym.isFavourite) {
         Icons.Filled.Favorite
@@ -51,7 +57,12 @@ fun GymItem(gym: Gym, onclick: (Int) -> Unit) {
         Icons.Filled.FavoriteBorder
     }
 
-    Card(elevation = CardDefaults.cardElevation(4.dp), modifier = Modifier.padding(8.dp)) {
+    Card(
+        elevation = CardDefaults.cardElevation(4.dp),
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable { onItemClick(gym.id) }
+    ) {
         //content of the card
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -65,7 +76,7 @@ fun GymItem(gym: Gym, onclick: (Int) -> Unit) {
             GymDetails(gym, Modifier.weight(0.70f))
 
             DefaultIcon(icon, Modifier.weight(0.15f), "Favourite Icon") {
-                onclick(gym.id)
+                onFavouriteItemClick(gym.id)
             }
 
 
@@ -97,8 +108,12 @@ fun DefaultIcon(
 }
 
 @Composable
-fun GymDetails(gym: Gym, modifier: Modifier) {
-    Column(modifier = modifier) {
+fun GymDetails(
+    gym: Gym,
+    modifier: Modifier,
+    horizontalAlign: Alignment.Horizontal = Alignment.CenterHorizontally
+) {
+    Column(modifier = modifier, horizontalAlignment = horizontalAlign) {
         Text(
             text = gym.name,
             color = Purple40,
@@ -121,7 +136,7 @@ fun GymDetails(gym: Gym, modifier: Modifier) {
 @Composable
 fun GymItemPreview() {
     GymsTheme {
-        GymsScreen()
+
     }
 
 }
