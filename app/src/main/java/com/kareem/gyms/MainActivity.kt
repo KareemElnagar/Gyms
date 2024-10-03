@@ -51,7 +51,7 @@ private fun GymsApp() {
         ) {
             GymDetailsScreen()
 
-        }
+            }
     }
 }
 
