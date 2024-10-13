@@ -10,10 +10,18 @@ import androidx.room.Update
 interface GymDao {
 
     @Query("SELECT * FROM gyms")
-     fun getAll(): List<Gym>
+    fun getAll(): List<Gym>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-     fun addAll(gyms: List<Gym>)
+    fun addAll(gyms: List<Gym>)
+
     @Update(entity = Gym::class)
-     fun update(gymFavouriteState: GymFavouriteState)
+    fun update(gymFavouriteState: GymFavouriteState)
+
+    @Query("SELECT * FROM gyms WHERE is_favourite = 1")
+    fun getFavouriteGyms(): List<Gym>
+
+     fun updateAll(gymsStates: List<GymFavouriteState>) {
+
+    }
 }
