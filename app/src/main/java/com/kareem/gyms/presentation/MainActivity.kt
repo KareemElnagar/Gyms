@@ -1,4 +1,4 @@
-package com.kareem.gyms
+package com.kareem.gyms.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,12 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.kareem.gyms.presentation.details.GymDetailsScreen
+import com.kareem.gyms.presentation.gymslist.GymsScreen
+import com.kareem.gyms.presentation.gymslist.GymsViewModel
 import com.kareem.gyms.ui.theme.GymsTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,9 +36,17 @@ private fun GymsApp() {
 
     NavHost(navController = navController, startDestination = "gyms") {
         composable(route = "gyms") {
-            GymsScreen { id ->
-                navController.navigate("gyms/$id")
-            }
+            val vm: GymsViewModel = viewModel()
+            GymsScreen(
+                state = vm.state.value,
+                onItemClick = { id ->
+                    navController.navigate("gyms/$id")
+
+                },
+                onFavouriteItemClick = { id, oldValue ->
+                    vm.toggleFavouriteState(id, oldValue)
+                }
+            )
         }
         composable(
             route = "gyms/{gym_id}",
@@ -51,7 +63,7 @@ private fun GymsApp() {
         ) {
             GymDetailsScreen()
 
-            }
+        }
     }
 }
 

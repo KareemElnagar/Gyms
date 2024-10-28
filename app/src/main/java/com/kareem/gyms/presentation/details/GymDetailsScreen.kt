@@ -1,4 +1,4 @@
-package com.kareem.gyms
+package com.kareem.gyms.presentation.details
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kareem.gyms.presentation.gymslist.DefaultIcon
+import com.kareem.gyms.presentation.gymslist.GymDetails
 
 @Composable
 fun GymDetailsScreen() {

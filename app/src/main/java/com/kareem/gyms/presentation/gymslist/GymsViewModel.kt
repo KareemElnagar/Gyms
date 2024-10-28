@@ -1,4 +1,4 @@
-package com.kareem.gyms
+package com.kareem.gyms.presentation.gymslist
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -51,11 +51,9 @@ class GymsViewModel : ViewModel() {
         }
     }
 
-    fun toggleFavouriteState(gymId: Int) {
-        val gyms = _state.gyms.toMutableList()
-        val itemIndex = gyms.indexOfFirst { it.id == gymId }
+    fun toggleFavouriteState(gymId: Int,oldValue:Boolean) {
         viewModelScope.launch {
-            val updatedGymsList = toggleFavouriteStateUseCase(gymId,gyms[itemIndex].isFavourite)
+            val updatedGymsList = toggleFavouriteStateUseCase(gymId,oldValue)
             _state = _state.copy(
                 gyms = updatedGymsList
             )

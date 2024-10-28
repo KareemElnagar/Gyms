@@ -1,5 +1,11 @@
-package com.kareem.gyms
+package com.kareem.gyms.data.repo
 
+import com.kareem.gyms.GymsApplication
+import com.kareem.gyms.data.repo.local.GymsDatabase
+import com.kareem.gyms.data.repo.local.LocalGym
+import com.kareem.gyms.data.repo.local.LocalGymFavouriteState
+import com.kareem.gyms.data.repo.remote.GymsApiService
+import com.kareem.gyms.domain.Gym
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
@@ -31,23 +37,29 @@ class GymsRepository() {
 
     suspend fun getGyms(): List<Gym> {
          return withContext(Dispatchers.IO) {
-             return@withContext gymsDao.getAll()
+             return@withContext gymsDao.getAll().map {
+                 Gym(it.id,it.name,it.place,it.isOpen,it.isFavourite)
+             }
          }
     }
      suspend fun updateLocalDatabase() {
         val gyms = apiService.getGyms()
         val favouriteGymsList = gymsDao.getFavouriteGyms()
-        gymsDao.addAll(gyms)
+        gymsDao.addAll(
+            gyms.map {
+                LocalGym(it.id,it.name,it.place,it.isOpen)
+            }
+        )
         gymsDao.updateAll(
             favouriteGymsList.map {
-                GymFavouriteState(it.id, true)
+                LocalGymFavouriteState(it.id, true)
             }
         )
     }
      suspend fun toggleFavouriteGym(gymId: Int, state: Boolean) =
         withContext(Dispatchers.IO) {
             gymsDao.update(
-                GymFavouriteState(
+                LocalGymFavouriteState(
                     id = gymId,
                     isFavourite = state
                 )

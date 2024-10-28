@@ -1,4 +1,4 @@
-package com.kareem.gyms
+package com.kareem.gyms.data.repo.local
 
 import android.content.Context
 import androidx.room.Database
@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import kotlin.concurrent.Volatile
 
 @Database(
-    entities = [Gym::class], version = 1, exportSchema = false
+    entities = [LocalGym::class], version = 2, exportSchema = false
 )
 abstract class GymsDatabase : RoomDatabase() {
 

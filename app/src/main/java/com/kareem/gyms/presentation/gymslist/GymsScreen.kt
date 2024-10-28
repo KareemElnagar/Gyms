@@ -1,4 +1,4 @@
-package com.kareem.gyms
+package com.kareem.gyms.presentation.gymslist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,14 +28,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kareem.gyms.domain.Gym
 import com.kareem.gyms.ui.theme.GymsTheme
 import com.kareem.gyms.ui.theme.Purple40
 
 @Composable
-fun GymsScreen(onItemClick: (Int) -> Unit) {
-    val vm: GymsViewModel = viewModel()
-    val state = vm.state.value
-
+fun GymsScreen(
+    onItemClick: (Int) -> Unit,
+    state: GymsScreenState,
+    onFavouriteItemClick: (id: Int, oldValue: Boolean) -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxWidth()
@@ -46,8 +47,8 @@ fun GymsScreen(onItemClick: (Int) -> Unit) {
             items(state.gyms) { gym ->
                 GymItem(
                     gym = gym,
-                    onFavouriteItemClick = {
-                        vm.toggleFavouriteState(it)
+                    onFavouriteItemClick = { id , oldValue ->
+                        onFavouriteItemClick(id,oldValue)
                     },
                     onItemClick = {
                         onItemClick(it)
@@ -63,7 +64,7 @@ fun GymsScreen(onItemClick: (Int) -> Unit) {
 }
 
 @Composable
-fun GymItem(gym: Gym, onFavouriteItemClick: (Int) -> Unit, onItemClick: (Int) -> Unit) {
+fun GymItem(gym: Gym, onFavouriteItemClick: (Int,Boolean) -> Unit, onItemClick: (Int) -> Unit) {
 
     val icon = if (gym.isFavourite) {
         Icons.Filled.Favorite
@@ -90,7 +91,7 @@ fun GymItem(gym: Gym, onFavouriteItemClick: (Int) -> Unit, onItemClick: (Int) ->
             GymDetails(gym, Modifier.weight(0.70f))
 
             DefaultIcon(icon, Modifier.weight(0.15f), "Favourite Icon") {
-                onFavouriteItemClick(gym.id)
+                onFavouriteItemClick(gym.id,gym.isFavourite)
             }
 
 

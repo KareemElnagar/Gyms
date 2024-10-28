@@ -1,9 +1,9 @@
-package com.kareem.gyms
+package com.kareem.gyms.data.repo.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 @Entity
-data class GymFavouriteState(
+data class LocalGymFavouriteState(
     @ColumnInfo(name = "gym_id")
     val id: Int,
 

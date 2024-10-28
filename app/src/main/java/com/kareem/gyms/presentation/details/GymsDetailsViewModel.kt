@@ -1,9 +1,11 @@
-package com.kareem.gyms
+package com.kareem.gyms.presentation.details
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kareem.gyms.data.repo.remote.GymsApiService
+import com.kareem.gyms.domain.Gym
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,6 +39,13 @@ class GymsDetailsViewModel(
     }
 
     private suspend fun getGymFromRemoteDB(id: Int) = withContext(Dispatchers.IO) {
-        apiService.getGym(id).values.first()
+        apiService.getGym(id).values.first().let {
+            Gym(
+                id = it.id,
+                name = it.name,
+                place = it.place,
+                isOpen = it.isOpen,
+            )
+        }
     }
 }
