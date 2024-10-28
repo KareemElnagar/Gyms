@@ -2,8 +2,10 @@ package com.kareem.gyms
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,20 +35,31 @@ import com.kareem.gyms.ui.theme.Purple40
 @Composable
 fun GymsScreen(onItemClick: (Int) -> Unit) {
     val vm: GymsViewModel = viewModel()
+    val state = vm.state.value
 
-    LazyColumn(Modifier.padding(8.dp)) {
-        items(vm.state) { gym ->
-            GymItem(
-                gym = gym,
-                onFavouriteItemClick = {
-                    vm.toggleFavouriteState(it)
-                },
-                onItemClick = {
-                    onItemClick(it)
-                }
-            )
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxWidth()
+
+    ) {
+        LazyColumn(Modifier.padding(8.dp)) {
+            items(state.gyms) { gym ->
+                GymItem(
+                    gym = gym,
+                    onFavouriteItemClick = {
+                        vm.toggleFavouriteState(it)
+                    },
+                    onItemClick = {
+                        onItemClick(it)
+                    }
+                )
+            }
         }
+        // if (state.isLoading) CircularProgressIndicator()
+        if (state.error != null) Text(text = state.error)
     }
+
+
 }
 
 @Composable
