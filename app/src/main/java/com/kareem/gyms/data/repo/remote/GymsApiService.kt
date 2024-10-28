@@ -1,6 +1,5 @@
 package com.kareem.gyms.data.repo.remote
 
-import com.kareem.gyms.data.repo.remote.RemoteGym
 import com.kareem.gyms.domain.Gym
 import retrofit2.http.GET
 import retrofit2.http.Query
